@@ -1,5 +1,7 @@
 # Saka Subtitle Exporter
 
+<img src="assets/fish.png" alt="Saka fish icon" width="160">
+
 A small Windows tool that extracts every subtitle track from an MKV file in one go. There is no main window; it runs from the File Explorer context menu.
 
 ## Installation
