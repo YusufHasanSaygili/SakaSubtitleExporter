@@ -1,6 +1,6 @@
 # Saka Subtitle Exporter
 
-<img src="assets/fish.png" alt="Saka fish icon" width="160">
+<img src="assets/saka.png" alt="Saka cat and fish icon" width="160">
 
 A small Windows desktop app for extracting subtitles from a batch of MKV files. Drop in a season, choose the tracks you want, and extract. Everything runs locally.
 
@@ -24,7 +24,7 @@ Setup defaults to `A:\Anime\Saka Subtitle Exporter`; choose another folder if yo
 4. Need two subtitles from just one episode? Click **Extract additional subtitle** on that episode and choose another track in the new dropdown.
 5. Click **Extract selected**.
 
-Track names and language labels come from the MKV. Saka does not guess whether an unnamed track contains full dialogue or only songs and signs. The window includes light and dark themes.
+Track names and language labels come from the MKV. Saka does not guess whether an unnamed track contains full dialogue or only songs and signs. Both themes use a blue palette with cat paws and fishbones. The mascot stays on the right while the episode queue scrolls.
 
 ## Output
 

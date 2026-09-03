@@ -7,11 +7,12 @@
     <RootNamespace>SakaSubtitleExporter</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>..\..\assets\fish.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\assets\saka.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />
-    <Resource Include="..\..\assets\fish.png" Link="Assets\fish.png" />
-    <Resource Include="..\..\assets\fish.ico" Link="Assets\fish.ico" />
+    <Resource Include="..\..\assets\saka.png" Link="Assets\saka.png" />
+    <Resource Include="..\..\assets\saka.ico" Link="Assets\saka.ico" />
+    <Resource Include="..\..\assets\mascot.png" Link="Assets\mascot.png" />
   </ItemGroup>
 </Project>

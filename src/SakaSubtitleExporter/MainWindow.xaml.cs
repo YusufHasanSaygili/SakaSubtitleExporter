@@ -197,9 +197,9 @@ namespace SakaSubtitleExporter
         private void ToggleTheme(object sender, RoutedEventArgs e)
         {
             light = !light;
-            string[] keys = { "Canvas", "Surface", "Field", "Line", "Ink", "Muted", "Accent", "AccentInk" };
-            string[] colors = light ? new[] { "#F3F5F7", "#FFFFFF", "#F0F3F5", "#CAD3DB", "#19232C", "#526575", "#087B96", "#FFFFFF" }
-                : new[] { "#14181D", "#1C2229", "#252D36", "#39434F", "#F1F5F8", "#A9B6C4", "#73D5EB", "#10232B" };
+            string[] keys = { "Canvas", "Surface", "Field", "Line", "Ink", "Muted", "Accent", "AccentInk", "PatternInk" };
+            string[] colors = light ? new[] { "#EDF3FA", "#FAFCFF", "#E7EFF8", "#B9CBDD", "#172B42", "#4B627C", "#2167A7", "#FFFFFF", "#D5E2F0" }
+                : new[] { "#0D1725", "#152235", "#1C2D43", "#344A64", "#F0F5FC", "#A9BCD3", "#79BBF3", "#102236", "#20344D" };
             for (int i = 0; i < keys.Length; i++) Resources[keys[i]] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i]));
             ThemeButton.Content = light ? "Dark theme" : "Light theme";
         }

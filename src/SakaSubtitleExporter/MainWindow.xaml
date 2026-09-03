@@ -1,19 +1,47 @@
 <Window x:Class="SakaSubtitleExporter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Saka Subtitle Exporter" Width="1160" Height="830" MinWidth="840" MinHeight="620"
+        Title="Saka Subtitle Exporter" Width="1280" Height="830" MinWidth="1040" MinHeight="680"
         Background="{DynamicResource Canvas}" Foreground="{DynamicResource Ink}"
-        FontFamily="Segoe UI" FontSize="13" Icon="Assets/fish.ico"
+        FontFamily="Segoe UI" FontSize="13" Icon="Assets/saka.ico"
         WindowStartupLocation="CenterScreen" AllowDrop="True" DragOver="OnDragOver" Drop="OnDrop" Closing="OnClosing">
     <Window.Resources>
-        <SolidColorBrush x:Key="Canvas" Color="#14181D"/>
-        <SolidColorBrush x:Key="Surface" Color="#1C2229"/>
-        <SolidColorBrush x:Key="Field" Color="#252D36"/>
-        <SolidColorBrush x:Key="Line" Color="#39434F"/>
-        <SolidColorBrush x:Key="Ink" Color="#F1F5F8"/>
-        <SolidColorBrush x:Key="Muted" Color="#A9B6C4"/>
-        <SolidColorBrush x:Key="Accent" Color="#73D5EB"/>
-        <SolidColorBrush x:Key="AccentInk" Color="#10232B"/>
+        <SolidColorBrush x:Key="Canvas" Color="#0D1725"/>
+        <SolidColorBrush x:Key="Surface" Color="#152235"/>
+        <SolidColorBrush x:Key="Field" Color="#1C2D43"/>
+        <SolidColorBrush x:Key="Line" Color="#344A64"/>
+        <SolidColorBrush x:Key="Ink" Color="#F0F5FC"/>
+        <SolidColorBrush x:Key="Muted" Color="#A9BCD3"/>
+        <SolidColorBrush x:Key="Accent" Color="#79BBF3"/>
+        <SolidColorBrush x:Key="AccentInk" Color="#102236"/>
+        <SolidColorBrush x:Key="PatternInk" Color="#20344D"/>
+        <DrawingBrush x:Key="CatPattern" TileMode="Tile" Viewport="0,0,200,200" ViewportUnits="Absolute" Viewbox="0,0,200,200" ViewboxUnits="Absolute" Stretch="None">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="Transparent" Geometry="M0,0 H200 V200 H0 Z"/>
+                    <DrawingGroup>
+                        <DrawingGroup.Transform><RotateTransform Angle="-22" CenterX="34" CenterY="37"/></DrawingGroup.Transform>
+                        <GeometryDrawing Brush="{DynamicResource PatternInk}" Geometry="M24,42 C24,36 30,29 34,29 C38,29 44,36 44,42 C44,48 37,45 34,44 C31,45 24,48 24,42 Z"/>
+                        <GeometryDrawing Brush="{DynamicResource PatternInk}"><GeometryDrawing.Geometry><GeometryGroup><EllipseGeometry Center="22,29" RadiusX="4" RadiusY="5"/><EllipseGeometry Center="29,22" RadiusX="4" RadiusY="5"/><EllipseGeometry Center="39,22" RadiusX="4" RadiusY="5"/><EllipseGeometry Center="47,29" RadiusX="4" RadiusY="5"/></GeometryGroup></GeometryDrawing.Geometry></GeometryDrawing>
+                    </DrawingGroup>
+                    <DrawingGroup>
+                        <DrawingGroup.Transform><RotateTransform Angle="24" CenterX="132" CenterY="139"/></DrawingGroup.Transform>
+                        <GeometryDrawing Brush="{DynamicResource PatternInk}" Geometry="M122,144 C122,138 128,131 132,131 C136,131 142,138 142,144 C142,150 135,147 132,146 C129,147 122,150 122,144 Z"/>
+                        <GeometryDrawing Brush="{DynamicResource PatternInk}"><GeometryDrawing.Geometry><GeometryGroup><EllipseGeometry Center="120,131" RadiusX="4" RadiusY="5"/><EllipseGeometry Center="127,124" RadiusX="4" RadiusY="5"/><EllipseGeometry Center="137,124" RadiusX="4" RadiusY="5"/><EllipseGeometry Center="145,131" RadiusX="4" RadiusY="5"/></GeometryGroup></GeometryDrawing.Geometry></GeometryDrawing>
+                    </DrawingGroup>
+                    <DrawingGroup>
+                        <DrawingGroup.Transform><RotateTransform Angle="32" CenterX="140" CenterY="44"/></DrawingGroup.Transform>
+                        <GeometryDrawing Brush="{DynamicResource PatternInk}" Geometry="M112,44 L123,35 L123,53 Z M155,36 Q174,44 155,52 Z"/>
+                        <GeometryDrawing Geometry="M120,44 H158 M133,44 L128,36 M133,44 L128,52 M144,44 L139,36 M144,44 L139,52"><GeometryDrawing.Pen><Pen Brush="{DynamicResource PatternInk}" Thickness="3" StartLineCap="Round" EndLineCap="Round" LineJoin="Round"/></GeometryDrawing.Pen></GeometryDrawing>
+                    </DrawingGroup>
+                    <DrawingGroup>
+                        <DrawingGroup.Transform><RotateTransform Angle="-38" CenterX="38" CenterY="145"/></DrawingGroup.Transform>
+                        <GeometryDrawing Brush="{DynamicResource PatternInk}" Geometry="M10,145 L21,136 L21,154 Z M53,137 Q72,145 53,153 Z"/>
+                        <GeometryDrawing Geometry="M18,145 H56 M31,145 L26,137 M31,145 L26,153 M42,145 L37,137 M42,145 L37,153"><GeometryDrawing.Pen><Pen Brush="{DynamicResource PatternInk}" Thickness="3" StartLineCap="Round" EndLineCap="Round" LineJoin="Round"/></GeometryDrawing.Pen></GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
         <BooleanToVisibilityConverter x:Key="BoolVisibility"/>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
@@ -92,11 +120,16 @@
             </ControlTemplate></Setter.Value></Setter>
         </Style>
     </Window.Resources>
-    <Grid Margin="28,20,28,22">
+    <Grid Background="{DynamicResource Canvas}">
+      <Rectangle x:Name="PatternBackdrop" Fill="{StaticResource CatPattern}" Opacity="0.5" IsHitTestVisible="False" Focusable="False"/>
+      <Grid Margin="28,20,28,22">
+       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="0.38*" MinWidth="220" MaxWidth="340"/></Grid.ColumnDefinitions>
+       <Image x:Name="MascotImage" Grid.Column="1" Source="Assets/mascot.png" Stretch="Uniform" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="12,62,0,0" IsHitTestVisible="False" Focusable="False" RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="Saka cat mascot"/>
+       <Grid x:Name="WorkspacePanel" Margin="0,0,16,0">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <Grid Margin="0,0,0,22">
             <StackPanel Orientation="Horizontal">
-                <Image Source="Assets/fish.png" Width="64" Height="48" Margin="-5,0,12,0"/>
+                <Border Background="#152235" CornerRadius="10" Width="52" Height="52" Margin="0,0,12,0"><Image Source="Assets/saka.png" Width="48" Height="48" RenderOptions.BitmapScalingMode="HighQuality"/></Border>
                 <StackPanel VerticalAlignment="Center"><TextBlock Text="Saka" FontSize="24" FontWeight="SemiBold"/><TextBlock Text="Subtitle Exporter" Foreground="{DynamicResource Muted}" FontSize="12"/></StackPanel>
             </StackPanel>
             <Button x:Name="ThemeButton" Content="Light theme" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ToggleTheme" ToolTip="Switch between light and dark themes"/>
@@ -140,7 +173,7 @@
                                 <ItemsControl ItemsSource="{Binding Selections}">
                                     <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate><DataTemplate>
-                                        <StackPanel Width="330" Margin="0,0,10,10">
+                                        <StackPanel Width="250" Margin="0,0,10,10">
                                             <Grid Margin="0,0,0,5"><TextBlock Text="{Binding Caption}" FontSize="11" Foreground="{DynamicResource Muted}" VerticalAlignment="Center"/>
                                                 <Button Content="Remove" Click="RemoveSlot" Padding="5,0" FontSize="11" HorizontalAlignment="Right" Visibility="{Binding IsAdditional, Converter={StaticResource BoolVisibility}}" ToolTip="Remove this additional selection"/>
                                             </Grid>
@@ -170,5 +203,7 @@
                 <Button Grid.Column="2" x:Name="ExtractButton" Content="Extract selected" Style="{StaticResource PrimaryButton}" Click="ExtractSelected" VerticalAlignment="Center" Padding="23,12"/>
             </Grid>
         </Border>
+       </Grid>
+      </Grid>
     </Grid>
 </Window>

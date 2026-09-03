@@ -51,9 +51,68 @@ namespace SakaSubtitleExporter.Tests
             if (renderFolder != null) Render(window, root, renderFolder, "saka-light.png");
             window.ThemeButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             Check(window.ThemeButton.Content.ToString() == "Light theme", "Dark theme switch");
-            Layout(root, 780);
+            Layout(root, 1024);
             Check(Descendants<ComboBox>(root).All(c => c.ActualWidth > 100), "Dropdown remains measurable at minimum width");
+            Check(window.MascotImage.Source != null && window.Icon != null, "Embedded branding assets load");
+            CheckMascotTransparency((BitmapSource)window.MascotImage.Source);
+            Check(!window.MascotImage.IsHitTestVisible && !window.PatternBackdrop.IsHitTestVisible, "Decorations do not intercept input");
+            Check(window.PatternBackdrop.Fill is DrawingBrush, "Repeating vector pattern loads");
+            CheckMascotBounds(window, root);
+            if (renderFolder != null) Render(window, root, renderFolder, "saka-compact.png");
+            Layout(root, 1024, 640);
+            CheckMascotBounds(window, root);
+            Check(window.ExtractButton.TranslatePoint(new Point(0, window.ExtractButton.ActualHeight), root).Y <= root.ActualHeight, "Extraction stays visible at minimum height");
+            if (renderFolder != null) Render(window, root, renderFolder, "saka-small.png");
+            for (int i = 2; i <= 30; i++)
+            {
+                var batchItem = new EpisodeItem(System.IO.Path.Combine(System.IO.Path.GetTempPath(), string.Format("[Saka] Frieren - {0:00} (WEB 1080p HEVC Dual Audio).mkv", i)));
+                batchItem.Load(Enumerable.Range(0, 24).Select(track => new SubtitleStream
+                {
+                    index = track + 2, codec_name = "ass",
+                    tags = new StreamTags { language = "eng", title = track == 0 ? "Full dialogue" : "Subtitle track " + track },
+                    disposition = new StreamDisposition { @default = track == 0 ? 1 : 0 }
+                }));
+                if (i == 15) { batchItem.AddSlot(); batchItem.Selections[1].Selected = batchItem.Tracks[1]; }
+                window.Enqueue(batchItem);
+            }
+            Layout(root, 1240);
+            var mascotPosition = window.MascotImage.TranslatePoint(new Point(0, 0), root);
+            var queueScroll = Descendants<ScrollViewer>(window.EpisodeList).First();
+            queueScroll.ScrollToVerticalOffset(14);
+            Layout(root, 1240);
+            Check(window.EpisodeList.Items.Count == 30 && queueScroll.ScrollableHeight > 0, "Long episode queue scrolls");
+            Check(window.MascotImage.TranslatePoint(new Point(0, 0), root) == mascotPosition, "Mascot stays fixed when the queue scrolls");
+            CheckMascotBounds(window, root);
+            Check(window.ExtractButton.IsEnabled, "Thirty-file batch remains extractable");
+            if (renderFolder != null) Render(window, root, renderFolder, "saka-batch.png");
+            window.ClearButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            Layout(root, 1240);
+            Check(window.EmptyState.Visibility == Visibility.Visible, "Empty state survives visual redesign");
+            if (renderFolder != null) Render(window, root, renderFolder, "saka-empty.png");
             window.Close();
+        }
+
+        private static void CheckMascotBounds(MainWindow window, FrameworkElement root)
+        {
+            Point mascot = window.MascotImage.TranslatePoint(new Point(0, 0), root);
+            Point workspace = window.WorkspacePanel.TranslatePoint(new Point(window.WorkspacePanel.ActualWidth, 0), root);
+            Check(mascot.X >= workspace.X && window.MascotImage.ActualWidth >= 180, "Mascot stays to the right without overlapping controls");
+            Check(mascot.Y + window.MascotImage.ActualHeight <= root.ActualHeight, "Full mascot fits in the viewport");
+        }
+
+        private static void CheckMascotTransparency(BitmapSource source)
+        {
+            var bitmap = new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
+            byte[] pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight * 4];
+            bitmap.CopyPixels(pixels, bitmap.PixelWidth * 4, 0);
+            int transparent = 0, opaqueWhite = 0;
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                if (pixels[i + 3] == 0) transparent++;
+                if (pixels[i + 3] == 255 && pixels[i] > 235 && pixels[i + 1] > 235 && pixels[i + 2] > 235) opaqueWhite++;
+            }
+            Check(transparent > bitmap.PixelWidth * bitmap.PixelHeight / 2, "Mascot background has actual alpha, not a baked-in checkerboard");
+            Check(opaqueWhite > 1000, "White details remain opaque");
         }
 
         private static void Render(Window window, FrameworkElement root, string folder, string name)
@@ -71,10 +130,10 @@ namespace SakaSubtitleExporter.Tests
             using (var output = System.IO.File.Create(System.IO.Path.Combine(folder, name))) encoder.Save(output);
         }
 
-        private static void Layout(FrameworkElement root, double width)
+        private static void Layout(FrameworkElement root, double width, double height = 740)
         {
-            root.Measure(new Size(width, 740));
-            root.Arrange(new Rect(0, 0, width, 740));
+            root.Measure(new Size(width, height));
+            root.Arrange(new Rect(0, 0, width, height));
             root.UpdateLayout();
             Pump();
         }
