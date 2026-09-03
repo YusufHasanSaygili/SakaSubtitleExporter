@@ -1,5 +1,5 @@
 #define MyAppName "Saka Subtitle Exporter"
-#define MyAppVersion "1.0.3"
+#define MyAppVersion "2.0.0"
 #define MyAppPublisher "YusufHasanSaygili"
 #define MyAppExeName "SakaSubtitleExporter.exe"
 
@@ -45,4 +45,7 @@ Source: "{#IconFile}"; DestDir: "{app}"; DestName: "fish.ico"; Flags: ignorevers
 Root: HKCU; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\SakaExportSubtitles"; ValueType: string; ValueName: "MUIVerb"; ValueData: "Export Subtitles With Saka"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\SakaExportSubtitles"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\fish.ico,0"
 Root: HKCU; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\SakaExportSubtitles"; ValueType: string; ValueName: "MultiSelectModel"; ValueData: "Single"
-Root: HKCU; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\SakaExportSubtitles\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" --extract ""%1"""
+Root: HKCU; Subkey: "Software\Classes\SystemFileAssociations\.mkv\shell\SakaExportSubtitles\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" --ui ""%1"""
+
+[Icons]
+Name: "{userprograms}\Saka Subtitle Exporter"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"

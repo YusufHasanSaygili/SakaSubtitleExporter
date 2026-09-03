@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <AssemblyName>SakaSubtitleExporter</AssemblyName>
     <RootNamespace>SakaSubtitleExporter</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -11,5 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Serialization" />
+    <Resource Include="..\..\assets\fish.png" Link="Assets\fish.png" />
+    <Resource Include="..\..\assets\fish.ico" Link="Assets\fish.ico" />
   </ItemGroup>
 </Project>

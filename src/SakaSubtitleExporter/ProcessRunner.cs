@@ -6,8 +6,9 @@ namespace SakaSubtitleExporter
 {
     internal static class ProcessRunner
     {
-        public static ProcessResult Run(string executable, string arguments)
+        public static ProcessResult Run(string executable, string arguments, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var start = new ProcessStartInfo
             {
                 FileName = executable,
@@ -30,9 +31,22 @@ namespace SakaSubtitleExporter
                 var errorThread = new Thread(() => standardError = process.StandardError.ReadToEnd());
                 outputThread.Start();
                 errorThread.Start();
-                process.WaitForExit();
-                outputThread.Join();
-                errorThread.Join();
+                try
+                {
+                    while (!process.WaitForExit(100))
+                    {
+                        if (!cancellationToken.IsCancellationRequested) continue;
+                        try { process.Kill(); } catch (System.InvalidOperationException) { }
+                        process.WaitForExit();
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+                }
+                finally
+                {
+                    outputThread.Join();
+                    errorThread.Join();
+                }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 return new ProcessResult
                 {

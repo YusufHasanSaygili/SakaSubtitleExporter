@@ -1,5 +1,6 @@
 using System;
-using System.Windows.Forms;
+using System.Linq;
+using System.Windows;
 
 namespace SakaSubtitleExporter
 {
@@ -8,24 +9,20 @@ namespace SakaSubtitleExporter
         [STAThread]
         private static int Main(string[] args)
         {
-            if (args.Length != 2 || !string.Equals(args[0], "--extract", StringComparison.OrdinalIgnoreCase))
-            {
-                MessageBox.Show(
-                    "Right-click an MKV file and select\n\"Export Subtitles With Saka\".",
-                    "Saka Subtitle Exporter",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return 0;
-            }
-
             try
             {
-                SubtitleExporter.ExportAll(args[1]);
+                if (args.Length == 2 && string.Equals(args[0], "--extract", StringComparison.OrdinalIgnoreCase))
+                {
+                    SubtitleExporter.ExportAll(args[1]);
+                    return 0;
+                }
+                var application = new Application();
+                application.Run(new MainWindow(args.Where(a => a != "--ui").ToArray()));
                 return 0;
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                MessageBox.Show(exception.Message, "Saka Subtitle Exporter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Saka Subtitle Exporter", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 1;
             }
         }
