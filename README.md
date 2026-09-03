@@ -1,12 +1,12 @@
 # Saka Subtitle Exporter
 
-<img src="assets/saka.png" alt="Saka cat and fish icon" width="160">
+<img align="left" src="assets/readme-mascot.png" alt="Saka's catgirl mascot looking right, holding her hands like cat paws with one foot raised behind her" width="210" hspace="20">
 
 A small Windows desktop app for extracting subtitles from a batch of MKV files. Drop in a season, choose the tracks you want, and extract. Everything runs locally.
 
-## Installation
+### Installation
 
-1. Download `SakaSubtitleExporterSetup.exe` from the **Releases** page.
+1. Download `SakaSubtitleExporterSetup.exe` from the [latest release](https://github.com/YusufHasanSaygili/SakaSubtitleExporter/releases/latest).
 2. Complete the setup.
 3. Open Saka from the Start menu, or right-click an MKV and select **Export Subtitles With Saka**.
 
@@ -15,6 +15,8 @@ On Windows 11, the command may appear under **Show more options**.
 The application and its context-menu entry are installed for the current Windows user only. Administrator access is not required.
 
 Setup defaults to `A:\Anime\Saka Subtitle Exporter`; choose another folder if you prefer. Upgrades keep the existing installation location.
+
+<br clear="all">
 
 ## Choose your tracks
 
