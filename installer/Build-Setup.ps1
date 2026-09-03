@@ -13,10 +13,10 @@ $setupDirectory = Join-Path $repositoryRoot 'artifacts\setup'
 $setupScript = Join-Path $PSScriptRoot 'SakaSubtitleExporter.iss'
 
 dotnet build $solutionPath -c $Configuration
-if ($LASTEXITCODE -ne 0) { throw 'Derleme başarısız.' }
+if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
 
 dotnet run --project $testProject -c $Configuration --no-build
-if ($LASTEXITCODE -ne 0) { throw 'Testler başarısız.' }
+if ($LASTEXITCODE -ne 0) { throw 'Tests failed.' }
 
 New-Item -ItemType Directory -Force -Path $setupDirectory | Out-Null
 
@@ -27,10 +27,10 @@ $compilerCandidates = @(
 )
 $compiler = $compilerCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
 if (-not $compiler) {
-    throw 'Inno Setup 6 bulunamadı. winget install JRSoftware.InnoSetup komutuyla kurabilirsin.'
+    throw 'Inno Setup 6 was not found. Install it with: winget install JRSoftware.InnoSetup'
 }
 
 & $compiler "/DSourceExe=$sourceExe" "/DOutputDir=$setupDirectory" $setupScript
-if ($LASTEXITCODE -ne 0) { throw 'Kurulum paketi üretilemedi.' }
+if ($LASTEXITCODE -ne 0) { throw 'The setup package could not be created.' }
 
-Write-Host "Hazır: $(Join-Path $setupDirectory 'SakaSubtitleExporterSetup.exe')"
+Write-Host "Ready: $(Join-Path $setupDirectory 'SakaSubtitleExporterSetup.exe')"

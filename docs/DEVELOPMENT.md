@@ -1,24 +1,24 @@
-# Geliştirme
+# Development
 
-## Yapı
+## Repository layout
 
-- `src/SakaSubtitleExporter`: Windows uygulaması
-- `tests/SakaSubtitleExporter.Tests`: bağımlılıksız birim testleri
-- `installer`: Inno Setup paketi ve build betiği
-- `.github/workflows`: Windows build ve artifact üretimi
+- `src/SakaSubtitleExporter`: Windows application
+- `tests/SakaSubtitleExporter.Tests`: dependency-free unit tests
+- `installer`: Inno Setup package and build script
+- `.github/workflows`: Windows build and artifact generation
 
-## Derleme
+## Build and test
 
 ```powershell
 dotnet build .\SakaSubtitleExporter.sln -c Release
 dotnet run --project .\tests\SakaSubtitleExporter.Tests -c Release --no-build
 ```
 
-Kurulum paketini üretmek için Inno Setup 6 kurulu olmalı:
+Inno Setup 6 is required to create the installer:
 
 ```powershell
 winget install JRSoftware.InnoSetup
 .\installer\Build-Setup.ps1
 ```
 
-Build betiği önce çözümü ve testleri çalıştırır, ardından `artifacts\setup\SakaSubtitleExporterSetup.exe` dosyasını üretir.
+The build script compiles the solution, runs the tests, and creates `artifacts\setup\SakaSubtitleExporterSetup.exe`.

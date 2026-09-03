@@ -12,7 +12,7 @@ namespace SakaSubtitleExporter.Tests
                 MapsSubtitleFormats();
                 SanitizesFileNames();
                 QuotesWindowsArguments();
-                Console.WriteLine("Bütün testler geçti.");
+                Console.WriteLine("All tests passed.");
                 return 0;
             }
             catch (Exception exception)
@@ -24,31 +24,31 @@ namespace SakaSubtitleExporter.Tests
 
         private static void MapsSubtitleFormats()
         {
-            AssertEqual(".ass", SubtitleFormats.Resolve("ass").Extension, "ASS uzantısı");
-            AssertEqual(".srt", SubtitleFormats.Resolve("subrip").Extension, "SRT uzantısı");
-            AssertEqual("srt", SubtitleFormats.Resolve("mov_text").Codec, "Metin dönüştürme");
-            AssertEqual(".sup", SubtitleFormats.Resolve("hdmv_pgs_subtitle").Extension, "PGS uzantısı");
-            AssertEqual(".mkv", SubtitleFormats.Resolve("dvd_subtitle").Extension, "Bilinmeyen resim altyazısı");
+            AssertEqual(".ass", SubtitleFormats.Resolve("ass").Extension, "ASS extension");
+            AssertEqual(".srt", SubtitleFormats.Resolve("subrip").Extension, "SRT extension");
+            AssertEqual("srt", SubtitleFormats.Resolve("mov_text").Codec, "Text conversion");
+            AssertEqual(".sup", SubtitleFormats.Resolve("hdmv_pgs_subtitle").Extension, "PGS extension");
+            AssertEqual(".mkv", SubtitleFormats.Resolve("dvd_subtitle").Extension, "Unknown bitmap subtitle");
         }
 
         private static void SanitizesFileNames()
         {
-            AssertEqual("und", FileNames.Safe(null, "und", 25), "Boş dil");
-            AssertEqual("abc", FileNames.Safe("abc.", "x", 25), "Sondaki nokta");
-            AssertEqual("1234", FileNames.Safe("123456", "x", 4), "Uzunluk sınırı");
+            AssertEqual("und", FileNames.Safe(null, "und", 25), "Missing language");
+            AssertEqual("abc", FileNames.Safe("abc.", "x", 25), "Trailing period");
+            AssertEqual("1234", FileNames.Safe("123456", "x", 4), "Length limit");
         }
 
         private static void QuotesWindowsArguments()
         {
-            AssertEqual("plain", CommandLine.Quote("plain"), "Basit argüman");
-            AssertEqual("\"iki kelime\"", CommandLine.Quote("iki kelime"), "Boşluklu argüman");
-            AssertEqual("\"\"", CommandLine.Quote(string.Empty), "Boş argüman");
+            AssertEqual("plain", CommandLine.Quote("plain"), "Simple argument");
+            AssertEqual("\"two words\"", CommandLine.Quote("two words"), "Argument with spaces");
+            AssertEqual("\"\"", CommandLine.Quote(string.Empty), "Empty argument");
         }
 
         private static void AssertEqual(string expected, string actual, string name)
         {
             if (!string.Equals(expected, actual, StringComparison.Ordinal))
-                throw new InvalidOperationException(name + ": beklenen=" + expected + ", gelen=" + actual);
+                throw new InvalidOperationException(name + ": expected=" + expected + ", actual=" + actual);
         }
     }
 }

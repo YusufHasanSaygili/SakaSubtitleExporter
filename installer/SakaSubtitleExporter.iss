@@ -29,7 +29,6 @@ WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 
 [Languages]
-Name: "turkish"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]

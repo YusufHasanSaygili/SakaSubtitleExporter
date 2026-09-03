@@ -15,17 +15,17 @@ namespace SakaSubtitleExporter
         public static void ExportAll(string mkvPath, bool openFolder)
         {
             string resolvedPath = Path.GetFullPath(mkvPath);
-            if (!File.Exists(resolvedPath)) throw new FileNotFoundException("MKV dosyası bulunamadı.", resolvedPath);
+            if (!File.Exists(resolvedPath)) throw new FileNotFoundException("MKV file not found.", resolvedPath);
             if (!string.Equals(Path.GetExtension(resolvedPath), ".mkv", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException("Bu araç yalnızca MKV dosyaları için çalışır.");
+                throw new InvalidOperationException("This tool only supports MKV files.");
 
             Directory.CreateDirectory(ExportDirectory);
             string baseName = FileNames.Safe(Path.GetFileNameWithoutExtension(resolvedPath), "mkv", 110);
-            string reportPath = Path.Combine(ExportDirectory, baseName + "._Saka-raporu.txt");
+            string reportPath = Path.Combine(ExportDirectory, baseName + "._Saka-report.txt");
             var report = new List<string>
             {
-                "Kaynak: " + resolvedPath,
-                "Tarih: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                "Source: " + resolvedPath,
+                "Date: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                 string.Empty
             };
 
@@ -35,17 +35,17 @@ namespace SakaSubtitleExporter
                 string ffmpeg = ToolLocator.Find("ffmpeg.exe");
                 List<SubtitleStream> streams = Probe(ffprobe, resolvedPath);
 
-                report.Add("Altyazı parçası: " + streams.Count);
+                report.Add("Subtitle tracks: " + streams.Count);
                 report.Add(string.Empty);
 
                 for (int ordinal = 0; ordinal < streams.Count; ordinal++)
                     ExtractStream(ffmpeg, resolvedPath, baseName, streams[ordinal], ordinal + 1, report);
 
-                if (streams.Count == 0) report.Add("Bu MKV içinde altyazı parçası bulunamadı.");
+                if (streams.Count == 0) report.Add("No subtitle tracks were found in this MKV file.");
             }
             catch (Exception exception)
             {
-                report.Add("HATA: " + exception.Message);
+                report.Add("ERROR: " + exception.Message);
                 throw;
             }
             finally
@@ -61,7 +61,7 @@ namespace SakaSubtitleExporter
             string arguments = "-v error -show_entries " + CommandLine.Quote(entries) + " -of json " + CommandLine.Quote(mkvPath);
             ProcessResult result = ProcessRunner.Run(ffprobe, arguments);
             if (result.ExitCode != 0)
-                throw new InvalidOperationException("ffprobe hatası: " + result.StandardError.Trim());
+                throw new InvalidOperationException("ffprobe error: " + result.StandardError.Trim());
 
             var serializer = new DataContractJsonSerializer(typeof(ProbeResult));
             ProbeResult probe;
@@ -83,14 +83,14 @@ namespace SakaSubtitleExporter
         {
             string codec = stream.codec_name ?? "unknown";
             string language = FileNames.Safe(stream.tags == null ? null : stream.tags.language, "und", 25);
-            string title = FileNames.Safe(stream.tags == null ? null : stream.tags.title, "isimsiz", 70);
+            string title = FileNames.Safe(stream.tags == null ? null : stream.tags.title, "untitled", 70);
             SubtitleOutputFormat format = SubtitleFormats.Resolve(codec);
             string stem = string.Format("{0}.{1:D2}.{2}.{3}", baseName, ordinal, language, title);
             string outputPath = Path.Combine(ExportDirectory, stem + format.Extension);
 
             if (File.Exists(outputPath))
             {
-                report.Add("ATLANDI (mevcut): " + Path.GetFileName(outputPath));
+                report.Add("SKIPPED (already exists): " + Path.GetFileName(outputPath));
                 return;
             }
 
@@ -111,13 +111,13 @@ namespace SakaSubtitleExporter
             if (result.ExitCode != 0 || !File.Exists(outputPath))
             {
                 if (File.Exists(outputPath)) File.Delete(outputPath);
-                report.Add(string.Format("HATA: sıra={0}, stream={1}, codec={2}: {3}", ordinal, stream.index, codec, result.StandardError.Trim()));
+                report.Add(string.Format("ERROR: track={0}, stream={1}, codec={2}: {3}", ordinal, stream.index, codec, result.StandardError.Trim()));
                 return;
             }
 
             var flags = new List<string>();
-            if (stream.disposition != null && stream.disposition.@default == 1) flags.Add("varsayılan");
-            if (stream.disposition != null && stream.disposition.forced == 1) flags.Add("zorunlu");
+            if (stream.disposition != null && stream.disposition.@default == 1) flags.Add("default");
+            if (stream.disposition != null && stream.disposition.forced == 1) flags.Add("forced");
             string flagText = flags.Count == 0 ? string.Empty : " [" + string.Join(", ", flags.ToArray()) + "]";
             report.Add(string.Format("OK: {0} (stream={1}, codec={2}){3}", Path.GetFileName(outputPath), stream.index, codec, flagText));
         }

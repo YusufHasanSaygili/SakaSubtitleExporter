@@ -1,53 +1,53 @@
 # Saka Subtitle Exporter
 
-MKV dosyasının içindeki bütün altyazıları tek seferde çıkarmak için küçük bir Windows aracı. Arayüzü yok; Dosya Gezgini'ndeki sağ tık menüsünden çalışıyor.
+A small Windows tool that extracts every subtitle track from an MKV file in one go. There is no main window; it runs from the File Explorer context menu.
 
-## Kurulum
+## Installation
 
-1. **Releases** bölümünden `SakaSubtitleExporterSetup.exe` dosyasını indir.
-2. Kurulumu tamamla.
-3. Bir MKV dosyasına sağ tıklayıp **Export Subtitles With Saka** seçeneğine bas.
+1. Download `SakaSubtitleExporterSetup.exe` from the **Releases** page.
+2. Complete the setup.
+3. Right-click an MKV file and select **Export Subtitles With Saka**.
 
-Windows 11 menüyü doğrudan göstermiyorsa **Daha fazla seçenek göster** bölümüne bak.
+On Windows 11, the command may appear under **Show more options**.
 
-Program ve sağ tık kısayolu yalnızca mevcut Windows kullanıcısı için kurulur. Yönetici izni istemez.
+The application and its context-menu entry are installed for the current Windows user only. Administrator access is not required.
 
-## Nereye çıkarıyor?
+## Output
 
-Bütün altyazıları `A:\Anime` klasörüne yazar. Dosya adında kaynak videonun adı, altyazı sıra numarası, dil ve parça başlığı bulunur.
+All subtitle tracks are written to `A:\Anime`. Each filename includes the source video name, track number, language, and track title.
 
-Örnek:
+Example:
 
 ```text
-Bölüm 01.01.eng.Full Subtitles.ass
-Bölüm 01.02.eng.Signs & Songs.ass
+Episode 01.01.eng.Full Subtitles.ass
+Episode 01.02.eng.Signs & Songs.ass
 ```
 
-Aynı isimde bir dosya varsa üzerine yazmaz. İşlem sonunda klasörü açar ve `_Saka-raporu.txt` uzantılı bir işlem raporu bırakır.
+Existing files are never overwritten. When the job finishes, the output folder opens and a `_Saka-report.txt` file records what happened.
 
-## Desteklenen altyazılar
+## Supported subtitle formats
 
 - ASS / SSA
 - SRT / SubRip
 - WebVTT
 - PGS (`.sup`)
-- Diğer metin altyazıları (SRT'ye dönüştürülür)
-- Doğrudan dışarı aktarılamayan altyazılar (tek parçalı MKV olarak saklanır)
+- Other text-based subtitles (converted to SRT)
+- Unsupported bitmap or container-specific subtitles (saved as a single-track MKV)
 
-## Gerekenler
+## Requirements
 
-Windows 10 veya 11 ve FFmpeg gerekir. FFmpeg yüklü değilse PowerShell'de şu komutu çalıştırabilirsin:
+Windows 10 or 11 and FFmpeg are required. If FFmpeg is not installed, run:
 
 ```powershell
 winget install Gyan.FFmpeg
 ```
 
-## Kaynaktan derleme
+## Building from source
 
-Visual Studio 2022 veya .NET SDK 8 ve Inno Setup 6 gerekir.
+Visual Studio 2022 or the .NET 8 SDK and Inno Setup 6 are required.
 
 ```powershell
 .\installer\Build-Setup.ps1
 ```
 
-Hazır kurulum dosyası `artifacts\setup` klasörüne gelir. Ayrıntılar için [geliştirme notlarına](docs/DEVELOPMENT.md) bakabilirsin.
+The setup file is created in `artifacts\setup`. See the [development notes](docs/DEVELOPMENT.md) for details.

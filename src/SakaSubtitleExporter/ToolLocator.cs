@@ -35,7 +35,7 @@ namespace SakaSubtitleExporter
                 }
             }
 
-            throw new FileNotFoundException(fileName + " bulunamadı. FFmpeg kurulumu gerekli.");
+            throw new FileNotFoundException(fileName + " was not found. FFmpeg must be installed.");
         }
     }
 }

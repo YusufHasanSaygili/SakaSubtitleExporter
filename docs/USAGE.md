@@ -1,35 +1,35 @@
-# Kullanım
+# Usage
 
-## Altyazıları çıkarma
+## Extracting subtitles
 
-Bir `.mkv` dosyasına sağ tıkla ve **Export Subtitles With Saka** seçeneğine bas. Program MKV içindeki bütün altyazı parçalarını `A:\Anime` klasörüne çıkarır.
+Right-click an `.mkv` file and select **Export Subtitles With Saka**. Every subtitle track in the file is extracted to `A:\Anime`.
 
-Komut satırından da çalıştırılabilir:
+The application can also be run from a command prompt:
 
 ```powershell
-SakaSubtitleExporter.exe --extract "A:\Anime\ornek.mkv"
+SakaSubtitleExporter.exe --extract "A:\Anime\example.mkv"
 ```
 
-## Dosya adları
+## Filenames
 
-Çıktı düzeni şöyledir:
+Output files follow this pattern:
 
 ```text
-VideoAdı.Sıra.Dil.Başlık.uzantı
+VideoName.Track.Language.Title.extension
 ```
 
-MKV içinde dil veya başlık bilgisi yoksa sırasıyla `und` ve `isimsiz` kullanılır. Dosya adında kullanılamayan karakterler alt çizgiye çevrilir.
+If the MKV does not contain language or title metadata, `und` and `untitled` are used. Characters that Windows does not allow in filenames are replaced with underscores.
 
-## İşlem raporu
+## Job report
 
-Her çalıştırmada kaynak videonun yanında değil, çıktı klasöründe bir rapor oluşturulur:
+Each run creates a report in the output directory:
 
 ```text
-VideoAdı._Saka-raporu.txt
+VideoName._Saka-report.txt
 ```
 
-Raporda bulunan, atlanan ve çıkarılamayan parçalar ayrı ayrı yazılır.
+The report lists every exported, skipped, or failed subtitle track.
 
-## Kaldırma
+## Uninstalling
 
-Windows'ta **Ayarlar > Uygulamalar > Yüklü uygulamalar** bölümünden **Saka Subtitle Exporter** öğesini kaldır. Sağ tık menüsü de kaldırma işlemiyle birlikte silinir.
+Open **Settings > Apps > Installed apps** in Windows and uninstall **Saka Subtitle Exporter**. The context-menu entry is removed with the application.

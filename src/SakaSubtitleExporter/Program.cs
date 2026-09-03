@@ -11,7 +11,7 @@ namespace SakaSubtitleExporter
             if (args.Length != 2 || !string.Equals(args[0], "--extract", StringComparison.OrdinalIgnoreCase))
             {
                 MessageBox.Show(
-                    "Bir MKV dosyasına sağ tıklayıp\n\"Export Subtitles With Saka\" seçeneğini kullan.",
+                    "Right-click an MKV file and select\n\"Export Subtitles With Saka\".",
                     "Saka Subtitle Exporter",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
