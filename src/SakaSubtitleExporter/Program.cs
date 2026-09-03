@@ -20,7 +20,7 @@ namespace SakaSubtitleExporter
 
             try
             {
-                SubtitleExporter.ExportAll(args[1], true);
+                SubtitleExporter.ExportAll(args[1]);
                 return 0;
             }
             catch (Exception exception)

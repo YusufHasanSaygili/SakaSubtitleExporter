@@ -25,7 +25,7 @@ Episode 01.01.eng.Full Subtitles.ass
 Episode 01.02.eng.Signs & Songs.ass
 ```
 
-Existing files are never overwritten. When the job finishes, the output folder opens and a `_Saka-report.txt` file records what happened.
+Existing subtitle files are never overwritten. A `_Saka-report.txt` file records the result. Extraction runs without opening another File Explorer window.
 
 ## Supported subtitle formats
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
@@ -10,7 +9,7 @@ namespace SakaSubtitleExporter
 {
     internal static class SubtitleExporter
     {
-        public static void ExportAll(string mkvPath, bool openFolder)
+        public static void ExportAll(string mkvPath)
         {
             string resolvedPath = Path.GetFullPath(mkvPath);
             if (!File.Exists(resolvedPath)) throw new FileNotFoundException("MKV file not found.", resolvedPath);
@@ -52,7 +51,6 @@ namespace SakaSubtitleExporter
             finally
             {
                 File.WriteAllLines(reportPath, report.ToArray(), new UTF8Encoding(false));
-                if (openFolder) OpenExportDirectory(outputDirectory);
             }
         }
 
@@ -124,15 +122,5 @@ namespace SakaSubtitleExporter
             report.Add(string.Format("OK: {0} (stream={1}, codec={2}){3}", Path.GetFileName(outputPath), stream.index, codec, flagText));
         }
 
-        private static void OpenExportDirectory(string outputDirectory)
-        {
-            try
-            {
-                Process.Start(new ProcessStartInfo("explorer.exe", CommandLine.Quote(outputDirectory)) { UseShellExecute = true });
-            }
-            catch
-            {
-            }
-        }
     }
 }
