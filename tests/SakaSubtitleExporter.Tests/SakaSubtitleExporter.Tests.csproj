@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>SakaSubtitleExporter.Tests</AssemblyName>
+    <RootNamespace>SakaSubtitleExporter.Tests</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SakaSubtitleExporter\SakaSubtitleExporter.csproj" />
+  </ItemGroup>
+</Project>
