@@ -2,7 +2,7 @@
 
 ## Extracting subtitles
 
-Right-click an `.mkv` file and select **Export Subtitles With Saka**. Every subtitle track in the file is extracted to `A:\Anime`.
+Right-click an `.mkv` file and select **Export Subtitles With Saka**. Every subtitle track is extracted next to that MKV file.
 
 The application can also be run from a command prompt:
 

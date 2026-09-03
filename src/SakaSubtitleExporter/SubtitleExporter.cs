@@ -10,8 +10,6 @@ namespace SakaSubtitleExporter
 {
     internal static class SubtitleExporter
     {
-        public const string ExportDirectory = @"A:\Anime";
-
         public static void ExportAll(string mkvPath, bool openFolder)
         {
             string resolvedPath = Path.GetFullPath(mkvPath);
@@ -19,9 +17,12 @@ namespace SakaSubtitleExporter
             if (!string.Equals(Path.GetExtension(resolvedPath), ".mkv", StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("This tool only supports MKV files.");
 
-            Directory.CreateDirectory(ExportDirectory);
+            string outputDirectory = Path.GetDirectoryName(resolvedPath);
+            if (string.IsNullOrEmpty(outputDirectory))
+                throw new InvalidOperationException("The MKV directory could not be resolved.");
+
             string baseName = FileNames.Safe(Path.GetFileNameWithoutExtension(resolvedPath), "mkv", 110);
-            string reportPath = Path.Combine(ExportDirectory, baseName + "._Saka-report.txt");
+            string reportPath = Path.Combine(outputDirectory, baseName + "._Saka-report.txt");
             var report = new List<string>
             {
                 "Source: " + resolvedPath,
@@ -39,7 +40,7 @@ namespace SakaSubtitleExporter
                 report.Add(string.Empty);
 
                 for (int ordinal = 0; ordinal < streams.Count; ordinal++)
-                    ExtractStream(ffmpeg, resolvedPath, baseName, streams[ordinal], ordinal + 1, report);
+                    ExtractStream(ffmpeg, resolvedPath, outputDirectory, baseName, streams[ordinal], ordinal + 1, report);
 
                 if (streams.Count == 0) report.Add("No subtitle tracks were found in this MKV file.");
             }
@@ -51,7 +52,7 @@ namespace SakaSubtitleExporter
             finally
             {
                 File.WriteAllLines(reportPath, report.ToArray(), new UTF8Encoding(false));
-                if (openFolder) OpenExportDirectory();
+                if (openFolder) OpenExportDirectory(outputDirectory);
             }
         }
 
@@ -76,6 +77,7 @@ namespace SakaSubtitleExporter
         private static void ExtractStream(
             string ffmpeg,
             string mkvPath,
+            string outputDirectory,
             string baseName,
             SubtitleStream stream,
             int ordinal,
@@ -86,7 +88,7 @@ namespace SakaSubtitleExporter
             string title = FileNames.Safe(stream.tags == null ? null : stream.tags.title, "untitled", 70);
             SubtitleOutputFormat format = SubtitleFormats.Resolve(codec);
             string stem = string.Format("{0}.{1:D2}.{2}.{3}", baseName, ordinal, language, title);
-            string outputPath = Path.Combine(ExportDirectory, stem + format.Extension);
+            string outputPath = Path.Combine(outputDirectory, stem + format.Extension);
 
             if (File.Exists(outputPath))
             {
@@ -122,11 +124,11 @@ namespace SakaSubtitleExporter
             report.Add(string.Format("OK: {0} (stream={1}, codec={2}){3}", Path.GetFileName(outputPath), stream.index, codec, flagText));
         }
 
-        private static void OpenExportDirectory()
+        private static void OpenExportDirectory(string outputDirectory)
         {
             try
             {
-                Process.Start(new ProcessStartInfo("explorer.exe", CommandLine.Quote(ExportDirectory)) { UseShellExecute = true });
+                Process.Start(new ProcessStartInfo("explorer.exe", CommandLine.Quote(outputDirectory)) { UseShellExecute = true });
             }
             catch
             {

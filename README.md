@@ -14,7 +14,7 @@ The application and its context-menu entry are installed for the current Windows
 
 ## Output
 
-All subtitle tracks are written to `A:\Anime`. Each filename includes the source video name, track number, language, and track title.
+All subtitle tracks are written to the same folder as the source MKV. Each filename includes the source video name, track number, language, and track title.
 
 Example:
 

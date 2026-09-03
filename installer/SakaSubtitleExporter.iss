@@ -1,5 +1,5 @@
 #define MyAppName "Saka Subtitle Exporter"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "YusufHasanSaygili"
 #define MyAppExeName "SakaSubtitleExporter.exe"
 
