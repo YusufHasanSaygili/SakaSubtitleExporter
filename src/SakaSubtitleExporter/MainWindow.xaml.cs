@@ -20,10 +20,13 @@ namespace SakaSubtitleExporter
         private bool busy;
         private bool light;
         private bool closeAfterWork;
+        internal readonly SmoothScrollController Scrolling;
 
         public MainWindow(string[] paths)
         {
             InitializeComponent();
+            Scrolling = new SmoothScrollController(EpisodeList);
+            Closed += (s, e) => Scrolling.Dispose();
             EpisodeList.ItemsSource = episodes;
             RefreshSummary();
             Loaded += async (s, e) => await AddFiles(paths);
@@ -37,13 +40,33 @@ namespace SakaSubtitleExporter
 
         private void OnDragOver(object sender, DragEventArgs e)
         {
-            e.Effects = !busy && e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            bool valid = !busy && (e.AllowedEffects & DragDropEffects.Copy) != 0 && e.Data.GetDataPresent(DataFormats.FileDrop)
+                && ContainsMkv(e.Data.GetData(DataFormats.FileDrop) as string[]);
+            e.Effects = valid ? DragDropEffects.Copy : DragDropEffects.None;
+            SetDropFeedback(valid);
             e.Handled = true;
+        }
+
+        internal static bool ContainsMkv(string[] paths)
+        {
+            return paths != null && paths.Any(path => path != null && path.EndsWith(".mkv", StringComparison.OrdinalIgnoreCase));
+        }
+
+        internal void SetDropFeedback(bool active)
+        {
+            DropArea.Tag = active ? "Active" : "Idle";
+            DropTitle.Text = active ? "Release to add your MKV files" : "Drop your MKV files";
+        }
+
+        private void OnDragLeave(object sender, DragEventArgs e)
+        {
+            SetDropFeedback(false);
         }
 
         private async void OnDrop(object sender, DragEventArgs e)
         {
             e.Handled = true;
+            SetDropFeedback(false);
             if (!busy && e.Data.GetDataPresent(DataFormats.FileDrop)) await AddFiles((string[])e.Data.GetData(DataFormats.FileDrop));
         }
 
@@ -132,6 +155,7 @@ namespace SakaSubtitleExporter
         private void SetBusy(bool value, bool indeterminate = false)
         {
             busy = value;
+            if (value) { Scrolling.Stop(); SetDropFeedback(false); }
             DropArea.IsEnabled = QueueToolbar.IsEnabled = EpisodeList.IsEnabled = !value;
             CancelButton.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
             CancelButton.IsEnabled = value;
@@ -171,6 +195,7 @@ namespace SakaSubtitleExporter
         }
         private void ClearFiles(object sender, RoutedEventArgs e)
         {
+            Scrolling.Stop();
             foreach (var item in episodes) item.Changed -= RefreshSummary;
             episodes.Clear(); RefreshSummary(); StatusText.Text = "Saved beside each MKV. Existing subtitles are kept.";
         }

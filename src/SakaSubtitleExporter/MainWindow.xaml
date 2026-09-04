@@ -3,9 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Saka Subtitle Exporter" Width="1280" Height="830" MinWidth="1040" MinHeight="680"
         Background="{DynamicResource Canvas}" Foreground="{DynamicResource Ink}"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
         FontFamily="Segoe UI" FontSize="13" Icon="Assets/saka.ico"
-        WindowStartupLocation="CenterScreen" AllowDrop="True" DragOver="OnDragOver" Drop="OnDrop" Closing="OnClosing">
+        WindowStartupLocation="CenterScreen" AllowDrop="True" DragOver="OnDragOver" DragLeave="OnDragLeave" Drop="OnDrop" Closing="OnClosing">
     <Window.Resources>
+        <!-- Crop only transparent padding; keep the approved artwork pixels intact. -->
+        <BitmapImage x:Key="FullMascotArtwork" UriSource="Assets/mascot.png" CacheOption="OnLoad"/>
+        <CroppedBitmap x:Key="MascotArtwork" Source="{StaticResource FullMascotArtwork}" SourceRect="143,32,743,1571"/>
         <SolidColorBrush x:Key="Canvas" Color="#0D1725"/>
         <SolidColorBrush x:Key="Surface" Color="#152235"/>
         <SolidColorBrush x:Key="Field" Color="#1C2D43"/>
@@ -15,6 +19,11 @@
         <SolidColorBrush x:Key="Accent" Color="#79BBF3"/>
         <SolidColorBrush x:Key="AccentInk" Color="#102236"/>
         <SolidColorBrush x:Key="PatternInk" Color="#20344D"/>
+        <LinearGradientBrush x:Key="ScrollThumbBody" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#659DD0" Offset="0"/>
+            <GradientStop Color="#397EBB" Offset="0.4"/>
+            <GradientStop Color="#2B6198" Offset="1"/>
+        </LinearGradientBrush>
         <DrawingBrush x:Key="CatPattern" TileMode="Tile" Viewport="0,0,200,200" ViewportUnits="Absolute" Viewbox="0,0,200,200" ViewboxUnits="Absolute" Stretch="None">
             <DrawingBrush.Drawing>
                 <DrawingGroup>
@@ -43,6 +52,55 @@
             </DrawingBrush.Drawing>
         </DrawingBrush>
         <BooleanToVisibilityConverter x:Key="BoolVisibility"/>
+        <Style x:Key="ScrollPageArea" TargetType="RepeatButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="RepeatButton"><Border Background="Transparent"/></ControlTemplate></Setter.Value></Setter>
+        </Style>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="MinWidth" Value="20"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ScrollBar">
+                <Grid x:Name="ScrollShell" Background="Transparent">
+                    <Border x:Name="ScrollRail" Width="4" HorizontalAlignment="Center" Background="{DynamicResource Field}" CornerRadius="2"/>
+                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                        <Track.DecreaseRepeatButton><RepeatButton x:Name="PageBack" Command="ScrollBar.PageUpCommand" Style="{StaticResource ScrollPageArea}"/></Track.DecreaseRepeatButton>
+                        <Track.Thumb>
+                            <Thumb x:Name="BlueThumb" Cursor="Hand">
+                                <Thumb.Template><ControlTemplate TargetType="Thumb">
+                                    <Grid Background="Transparent">
+                                        <!-- Shorter visual, unchanged drag target and native scroll mapping. -->
+                                        <Border x:Name="ThumbFill" Background="{StaticResource ScrollThumbBody}" CornerRadius="8" Margin="2,0" Opacity="0.9"
+                                                BorderBrush="#608CC3F1" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
+                                            <Border.RenderTransform><ScaleTransform ScaleY="0.7"/></Border.RenderTransform>
+                                            <Border CornerRadius="6" Margin="2,2,5,2" IsHitTestVisible="False">
+                                                <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#50FFFFFF" Offset="0"/><GradientStop Color="#00FFFFFF" Offset="1"/></LinearGradientBrush></Border.Background>
+                                            </Border>
+                                        </Border>
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ThumbFill" Property="Opacity" Value="1"/></Trigger>
+                                        <Trigger Property="IsDragging" Value="True"><Setter TargetName="ThumbFill" Property="Opacity" Value="1"/></Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate></Thumb.Template>
+                            </Thumb>
+                        </Track.Thumb>
+                        <Track.IncreaseRepeatButton><RepeatButton x:Name="PageForward" Command="ScrollBar.PageDownCommand" Style="{StaticResource ScrollPageArea}"/></Track.IncreaseRepeatButton>
+                    </Track>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Orientation" Value="Horizontal">
+                        <Setter Property="Width" Value="Auto"/><Setter Property="Height" Value="20"/>
+                        <Setter TargetName="ScrollRail" Property="Width" Value="Auto"/><Setter TargetName="ScrollRail" Property="Height" Value="4"/>
+                        <Setter TargetName="ScrollRail" Property="HorizontalAlignment" Value="Stretch"/>
+                        <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
+                        <Setter TargetName="PageBack" Property="Command" Value="ScrollBar.PageLeftCommand"/>
+                        <Setter TargetName="PageForward" Property="Command" Value="ScrollBar.PageRightCommand"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ScrollShell" Property="Opacity" Value="0.35"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate></Setter.Value></Setter>
+        </Style>
         <Style TargetType="Button">
             <Setter Property="Foreground" Value="{DynamicResource Ink}"/>
             <Setter Property="Background" Value="{DynamicResource Field}"/>
@@ -123,8 +181,8 @@
     <Grid Background="{DynamicResource Canvas}">
       <Rectangle x:Name="PatternBackdrop" Fill="{StaticResource CatPattern}" Opacity="0.5" IsHitTestVisible="False" Focusable="False"/>
       <Grid Margin="28,20,28,22">
-       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="0.38*" MinWidth="220" MaxWidth="340"/></Grid.ColumnDefinitions>
-       <Image x:Name="MascotImage" Grid.Column="1" Source="Assets/mascot.png" Stretch="Uniform" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="12,62,0,0" IsHitTestVisible="False" Focusable="False" RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="Saka cat mascot"/>
+       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="0.38*" MinWidth="220" MaxWidth="420"/></Grid.ColumnDefinitions>
+       <Image x:Name="MascotImage" Grid.Column="1" Source="{StaticResource MascotArtwork}" Stretch="Uniform" StretchDirection="DownOnly" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="12,62,0,0" IsHitTestVisible="False" Focusable="False" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality" AutomationProperties.Name="Saka cat mascot"/>
        <Grid x:Name="WorkspacePanel" Margin="0,0,16,0">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <Grid Margin="0,0,0,22">
@@ -134,15 +192,26 @@
             </StackPanel>
             <Button x:Name="ThemeButton" Content="Light theme" HorizontalAlignment="Right" VerticalAlignment="Center" Click="ToggleTheme" ToolTip="Switch between light and dark themes"/>
         </Grid>
-        <Grid Grid.Row="1" Height="130" Margin="0,0,0,24" x:Name="DropArea">
-            <Border Background="{DynamicResource Surface}" CornerRadius="10"/>
-            <Rectangle Stroke="{DynamicResource Line}" StrokeDashArray="5 4" RadiusX="10" RadiusY="10" IsHitTestVisible="False"/>
-            <Grid Margin="24"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource Accent}" FontSize="30" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="Drop MKV files here" FontSize="21" FontWeight="SemiBold"/><TextBlock Text="Add one episode or a whole season. Your files stay on your PC." Foreground="{DynamicResource Muted}" Margin="0,7,15,0" TextWrapping="Wrap"/></StackPanel>
-                <Button Grid.Column="2" Content="Browse files" Click="BrowseFiles" VerticalAlignment="Center" Style="{StaticResource PrimaryButton}"/>
+        <Border Grid.Row="1" Margin="0,0,0,22" Padding="24,22" x:Name="DropArea" CornerRadius="12" BorderThickness="1" Tag="Idle">
+            <Border.Style><Style TargetType="Border">
+                <Setter Property="Background" Value="{DynamicResource Surface}"/><Setter Property="BorderBrush" Value="{DynamicResource Line}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True"><Setter Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
+                    <Trigger Property="Tag" Value="Active"><Setter Property="Background" Value="{DynamicResource Field}"/><Setter Property="BorderBrush" Value="{DynamicResource Accent}"/></Trigger>
+                </Style.Triggers>
+            </Style></Border.Style>
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <Border Width="60" Height="70" CornerRadius="10" Background="{DynamicResource Field}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Margin="0,0,20,0" VerticalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"><TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource Accent}" FontSize="25" HorizontalAlignment="Center"/><TextBlock Text="MKV" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource Muted}" HorizontalAlignment="Center" Margin="0,7,0,0"/></StackPanel>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <TextBlock x:Name="DropTitle" Text="Drop your MKV files" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="One episode or a whole season." Foreground="{DynamicResource Muted}" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                    <TextBlock Text="Choose your subtitle tracks after adding files." Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+                <Button Grid.Column="2" Content="Browse files" Click="BrowseFiles" VerticalAlignment="Center" Style="{StaticResource PrimaryButton}" Padding="18,12"/>
             </Grid>
-        </Grid>
+        </Border>
         <Grid Grid.Row="2" Margin="0,0,0,12" x:Name="QueueToolbar">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="Episodes" FontSize="17" FontWeight="SemiBold"/><TextBlock x:Name="FileCount" Text="0 files" Margin="12,4,0,0" Foreground="{DynamicResource Muted}"/></StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -157,6 +226,7 @@
             </StackPanel>
             <ListBox x:Name="EpisodeList" BorderThickness="0" Background="Transparent" Foreground="{DynamicResource Ink}"
                      HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.CanContentScroll="True" VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.IsDeferredScrollingEnabled="False"
                      ScrollViewer.VerticalScrollBarVisibility="Auto" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
                 <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem"><Setter Property="Padding" Value="0"/><Setter Property="Margin" Value="0,0,6,10"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="Focusable" Value="False"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ListBoxItem"><ContentPresenter/></ControlTemplate></Setter.Value></Setter></Style></ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate><DataTemplate>
