@@ -18,6 +18,12 @@ Setup defaults to `A:\Anime\Saka Subtitle Exporter`; choose another folder if yo
 
 <br clear="all">
 
+## In the app
+
+![Saka 2.1.4 in dark mode, with three MKV episodes and an additional subtitle selected for the first episode](docs/images/saka-2.1.4.png)
+
+Pick one track per episode, or add another just where you need it.
+
 ## Choose your tracks
 
 1. Add MKVs with **Browse files** or drag and drop.

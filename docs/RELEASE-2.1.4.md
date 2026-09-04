@@ -10,3 +10,7 @@ Replaced the in-app mascot with the approved cleaner illustration without the tw
 - Better use of the mascot's right-hand space and per-monitor DPI awareness.
 
 Existing subtitle files are still preserved, and output stays beside each source MKV. Install the attached setup to upgrade; the current installation folder is retained. FFmpeg and ffprobe are required and are not bundled.
+
+## In the app
+
+[View the Saka 2.1.4 screenshot](https://github.com/YusufHasanSaygili/SakaSubtitleExporter/blob/main/docs/images/saka-2.1.4.png) — three episodes, with an additional subtitle selected for the first.
